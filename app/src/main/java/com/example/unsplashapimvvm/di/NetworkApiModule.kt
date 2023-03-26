@@ -1,5 +1,6 @@
 package com.example.unsplashapimvvm.di
 
+import com.example.unsplashapimvvm.apiservices.ApiResponseCallAdapterFactory
 import com.example.unsplashapimvvm.apiservices.UnsplashApiService
 import com.example.unsplashapimvvm.utils.AppConstants
 import dagger.Module
@@ -42,7 +43,7 @@ class NetworkApiModule {
             .baseUrl(UnsplashApiService.BASE_API_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory())
             .build()
     }
 

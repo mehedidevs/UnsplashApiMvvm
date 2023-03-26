@@ -7,43 +7,43 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.unsplashapimvvm.model.PhotoModel
 import com.example.unsplashapimvvm.repo.ImagineRepositoryImpl
-import com.example.unsplashapimvvm.utils.DataState
+import com.example.unsplashapimvvm.utils.ApiDataState
+import com.example.unsplashapimvvm.utils.UiDataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    var imagineRepositoryImpl: ImagineRepositoryImpl
+    private var imagineRepositoryImpl: ImagineRepositoryImpl
 ) : ViewModel() {
 
-    private var _photoList = MutableLiveData<DataState<List<PhotoModel>>>()
-    val photoList: LiveData<DataState<List<PhotoModel>>>
+    private var _photoList = MutableLiveData<UiDataState<List<PhotoModel>>>()
+    val photoList: LiveData<UiDataState<List<PhotoModel>>>
         get() = _photoList
 
+    init {
+        _photoList.postValue(UiDataState.Loading("Loading"))
+
+    }
 
 
-
-     fun fetchPhotos(page: Int) {
+    fun fetchPhotos(page: Int) {
 
         viewModelScope.launch {
-            imagineRepositoryImpl.loadPhotos(page, 30, "popular").collect { dataState ->
-
-                Log.i("TAG", "fetchPhotos: $dataState")
+            imagineRepositoryImpl.loadPhotos(page, 30, "popular").collect { apiState ->
 
 
-                when (dataState) {
-                    is DataState.Error -> {
-                        _photoList.postValue(DataState.Error(dataState.message))
-
+                when (apiState) {
+                    is ApiDataState.Success -> {
+                        _photoList.postValue(UiDataState.Success(apiState.data))
                     }
-                    is DataState.Loading -> {
-                        _photoList.postValue(DataState.Loading("Loading...."))
-                    }
-                    is DataState.Success -> {
 
-                        _photoList.postValue(DataState.Success(dataState.data))
+                    is ApiDataState.Error -> {
+                        _photoList.postValue(UiDataState.Error(apiState.message))
                     }
+
+
                 }
 
 

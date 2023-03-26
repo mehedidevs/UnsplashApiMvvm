@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.unsplashapimvvm.adapters.PhotosAdapter
 import com.example.unsplashapimvvm.databinding.FragmentHomeBinding
-import com.example.unsplashapimvvm.utils.DataState
+import com.example.unsplashapimvvm.utils.UiDataState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -50,14 +50,14 @@ class HomeFragment : Fragment() {
 
         viewModel.photoList.observe(viewLifecycleOwner) {
             when (it) {
-                is DataState.Error -> {
+                is UiDataState.Error -> {
                     Log.i("TAG", "error : ${it.message} : ")
 
                 }
-                is DataState.Loading -> {
+                is UiDataState.Loading -> {
                     Log.i("TAG", "Data : : ${it.message} : ")
                 }
-                is DataState.Success -> {
+                is UiDataState.Success -> {
 
                     Log.i("TAG", "data: ${it.data}")
 
